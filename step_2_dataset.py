@@ -5,7 +5,7 @@ import torch.nn as nn
 import numpy as np
 import torch
 
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 import csv
 
@@ -76,10 +76,10 @@ class SignLanguageMNIST(Dataset):
         self._mean = mean
         self._std = std
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._labels)
     
-    def __getitem__(self, index):
+    def __getitem__(self, index) -> Dict[str, str]:
         """Returns a dictionary containing the sample and the label
         
         Uses a technique called data augmentation, where samples are preturbed during training to increase model's robusness.
@@ -88,6 +88,7 @@ class SignLanguageMNIST(Dataset):
         
         We then normalize the inputs so that the image values are rescaled to the [0, 1] range in expectation.
         """
+
         transform = transforms.Compose([
             transforms.ToPILImage(),
             transforms.RandomResizedCrop(28, scale=(0.8, 1.2)),
@@ -101,7 +102,7 @@ class SignLanguageMNIST(Dataset):
         }
 
         
-def get_train_test_loaders(batch_size=32):
+def get_train_test_loaders(batch_size=32) -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
     trainset = SignLanguageMNIST('data/sign_mnist_train.csv')
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
 
