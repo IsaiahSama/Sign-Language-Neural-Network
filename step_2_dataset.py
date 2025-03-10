@@ -110,3 +110,7 @@ def get_train_test_loaders(batch_size=32) -> Tuple[torch.utils.data.DataLoader, 
     testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False)
 
     return trainloader, testloader
+
+if __name__ == "__main__":
+    loader, _ = get_train_test_loaders(2)
+    print(next(iter(loader)))
