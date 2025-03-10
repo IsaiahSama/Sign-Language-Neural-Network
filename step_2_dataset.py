@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset
 from torch.autograd import Variable
+import torchvision.transforms as transforms
 import torch.nn as nn
 import numpy as np
 import torch
@@ -74,3 +75,27 @@ class SignLanguageMNIST(Dataset):
         
         self._mean = mean
         self._std = std
+
+    def __len__(self):
+        return len(self._labels)
+    
+    def __getitem__(self, index):
+        """Returns a dictionary containing the sample and the label
+        
+        Uses a technique called data augmentation, where samples are preturbed during training to increase model's robusness.
+        
+        In this case, will randomly zoom in on the image by varying amounts and on different locations via RandomResizedCrop.
+        
+        We then normalize the inputs so that the image values are rescaled to the [0, 1] range in expectation.
+        """
+        transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.RandomResizedCrop(28, scale=(0.8, 1.2)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=self._mean, std=self._std)
+        ])
+
+        return {
+            'image': transform(self._samples[index]).float(),
+            'label': torch.from_numpy(self._labels[index]).float()
+        }
