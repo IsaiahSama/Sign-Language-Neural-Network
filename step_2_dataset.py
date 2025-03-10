@@ -99,3 +99,13 @@ class SignLanguageMNIST(Dataset):
             'image': transform(self._samples[index]).float(),
             'label': torch.from_numpy(self._labels[index]).float()
         }
+
+        
+def get_train_test_loaders(batch_size=32):
+    trainset = SignLanguageMNIST('data/sign_mnist_train.csv')
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
+
+    testset = SignLanguageMNIST('data/sign_mnist_test.csv')
+    testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False)
+
+    return trainloader, testloader
