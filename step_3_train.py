@@ -49,6 +49,30 @@ class Net(nn.Module):
         return x
 
 
+def train(net, criterion, optimizer, trainloader, epoch: int):
+    """This method will run the forward pass and then back propagate through
+    the loss and neural network"""
+
+    running_loss = 0.0
+
+    for i, data in enumerate(trainloader, 0):
+        inputs = Variable(data["image"].float())
+        labels = Variable(data["label"].long())
+        optimizer.zero_grad()
+
+        # Forward + backward + optimize
+
+        outputs = net(inputs)
+        loss = criterion(outputs, labels[:, 0])
+        loss.backward()
+        optimizer.step()
+
+        running_loss += loss.item()
+
+        if i % 100 == 0:
+            print("[%d, %5d] loss: %.6f" % (epoch, i, running_loss / (i + 1)))
+
+
 def main():
     net = Net().float()
     criterion = nn.CrossEntropyLoss()
@@ -56,6 +80,12 @@ def main():
 
     trainloader, _ = get_train_test_loaders()
 
+    # An epoch is an iteration of training where every training sample
+    # has been used exactly once.
     for epoch in range(2):
         train(net, criterion, optimizer, trainloader, epoch)
     torch.save(net.state_dict(), "checkpoint.pth")
+
+
+if __name__ == "__main__":
+    main()
