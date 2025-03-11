@@ -1,7 +1,5 @@
 from torch.utils.data import Dataset
-from torch.autograd import Variable
 import torchvision.transforms as transforms
-import torch.nn as nn
 import numpy as np
 import torch
 

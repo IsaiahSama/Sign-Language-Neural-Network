@@ -8,7 +8,6 @@ finally, optimize the loss function for your neural network predictions.
 
 """
 
-from torch.utils.data import Dataset
 from torch.autograd import Variable
 
 import torch.nn as nn
