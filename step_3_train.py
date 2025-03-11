@@ -28,35 +28,35 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
 
-        self.conv1 = nn.Conv2d(1, 6, 3)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 6, 3)
-        self.conv3 = nn.Conv2d(6, 16, 3)
+        self.conv1 = nn.Conv2d(1, 6, 3).to("cuda")
+        self.pool = nn.MaxPool2d(2, 2).to("cuda")
+        self.conv2 = nn.Conv2d(6, 6, 3).to("cuda")
+        self.conv3 = nn.Conv2d(6, 16, 3).to("cuda")
 
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 48)
-        self.fc3 = nn.Linear(48, 24)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120).to("cuda")
+        self.fc2 = nn.Linear(120, 48).to("cuda")
+        self.fc3 = nn.Linear(48, 24).to("cuda")
 
     def forward(self, x):
-        x = F.relu(self.conv1(x))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = self.pool(F.relu(self.conv3(x)))
+        x = F.relu(self.conv1(x)).to("cuda")
+        x = self.pool(F.relu(self.conv2(x)).to("cuda"))
+        x = self.pool(F.relu(self.conv3(x)).to("cuda"))
         x = x.view(-1, 16 * 5 * 5)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc1(x)).to("cuda")
+        x = F.relu(self.fc2(x)).to("cuda")
         x = self.fc3(x)
         return x
 
 
-def train(net, criterion, optimizer, trainloader, epoch: int):
+def train(net: Net, criterion: nn.CrossEntropyLoss, optimizer: optim.SGD, trainloader: torch.utils.data.DataLoader, epoch: int):
     """This method will run the forward pass and then back propagate through
     the loss and neural network"""
 
     running_loss = 0.0
 
     for i, data in enumerate(trainloader, 0):
-        inputs = Variable(data["image"].float())
-        labels = Variable(data["label"].long())
+        inputs = Variable(data["image"].float()).to("cuda")
+        labels = Variable(data["label"].long()).to("cuda")
         optimizer.zero_grad()
 
         # Forward + backward + optimize

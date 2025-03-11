@@ -33,11 +33,12 @@ def batch_evaluate(model: Net, loader: torch.utils.data.DataLoader) -> float:
     score = n = 0.0
     
     for batch in loader:
+        batch['image'] = batch['image'].to('cuda')
         n += len(batch['image'])
         outputs = model(batch['image'])
 
         if isinstance(outputs, torch.Tensor):
-            outputs = outputs.detach().numpy()
+            outputs = outputs.detach().cpu().numpy()
 
         score += evaluate(outputs, batch['label'][:, 0])
 
@@ -65,7 +66,7 @@ def validate():
     trainloader, testloader = get_train_test_loaders(1)
     
     fname = "sign_language.onnx"
-    dummy = torch.randn(1, 1, 28, 28)
+    dummy = torch.randn(1, 1, 28, 28).to('cuda')
     torch.onnx.export(net, dummy, fname, input_names=['input'])
 
     # Checking the exported model
@@ -78,7 +79,7 @@ def validate():
     ort_session = ort.InferenceSession(fname)
 
     def net(inp):
-        return ort_session.run(None, {'input': inp.data.numpy()})[0]
+        return ort_session.run(None, {'input': inp.data.cpu().numpy()})[0]
     
     print('=' * 10, 'ONNX', '=' * 10)
     train_acc = batch_evaluate(net, trainloader) * 100.
