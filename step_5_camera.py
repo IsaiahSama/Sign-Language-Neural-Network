@@ -9,7 +9,7 @@ from string import ascii_uppercase
 
 def center_crop(frame: MatLike) -> MatLike:
     """Crops a frame to the center of the image."""
-    height, width = frame.shape
+    height, width, _ = frame.shape
     start = abs(height - width) // 2
     
     if height > width:
@@ -40,7 +40,7 @@ def main():
         x = cv2.resize(frame, (28, 28)) # Resizes to 28 x 28
         x = (frame - mean) / std # Normalizes the values
         
-        x = x.reshaape((1, 1, 28, 28)).astype(np.float32) # Reshapes to (1, 1, 28, 28)
+        x = x.reshape(1, 1, 28, 28).astype(np.float32) # Reshapes to (1, 1, 28, 28)
         y = ort_session.run(None, {'input': x})[0] # Runs the model
         
         index = np.argmax(y, axis=1)
