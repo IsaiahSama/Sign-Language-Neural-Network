@@ -48,7 +48,7 @@ def main():
 
         # Display the letter inside the frame, and display it back to the user.
         
-        cv2.putText(frame, letter, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 255), 2)
+        cv2.putText(frame, letter, (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 255), 2)
         cv2.imshow("Camera", frame)
 
         if cv2.waitKey(1) == ord("q"):
