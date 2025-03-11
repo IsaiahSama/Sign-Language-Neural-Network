@@ -38,13 +38,13 @@ def main():
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY) # Converts from RGB to grayscale
         
         x = cv2.resize(frame, (28, 28)) # Resizes to 28 x 28
-        x = (frame - mean) / std # Normalizes the values
+        x = (x - mean) / std # Normalizes the values
         
         x = x.reshape(1, 1, 28, 28).astype(np.float32) # Reshapes to (1, 1, 28, 28)
         y = ort_session.run(None, {'input': x})[0] # Runs the model
         
         index = np.argmax(y, axis=1)
-        letter = index_to_letters[index]
+        letter = index_to_letters[int(index)]
 
         # Display the letter inside the frame, and display it back to the user.
         
