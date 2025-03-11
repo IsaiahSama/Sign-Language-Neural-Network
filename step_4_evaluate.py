@@ -49,7 +49,7 @@ def validate():
     """
     trainloader, testloader = get_train_test_loaders()
 
-    net = Net().float()
+    net = Net().float().eval()
     
     pretrained_model = torch.load("checkpoint.pth")
     net.load_state_dict(pretrained_model)
@@ -62,7 +62,7 @@ def validate():
 
     # Exporting the model to an ONNX binary.
     
-    trainloader, tesetloader = get_train_test_loaders(1)
+    trainloader, testloader = get_train_test_loaders(1)
     
     fname = "sign_language.onnx"
     dummy = torch.randn(1, 1, 28, 28)
